@@ -18,6 +18,11 @@ class Car {
         this.rating = rating;
     }
 
+    Car withRating(float rating) {
+        this.setRating(rating);
+        return this;
+    }
+
     @Override
     public String toString() {
         return "Car (id=" + id + ", manufacturerId=" + manufacturerId + ", model=" + model + ", year=" + year

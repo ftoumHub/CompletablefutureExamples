@@ -11,6 +11,7 @@ public class RealLifeCompletableFutureExample {
     public static void main(String[] args) {
         long start = System.currentTimeMillis();
 
+        // Lorsqu'on veut exploiter successivement 2 services qui retournent un CompletableFuture on utilise thenCompose
         cars().thenCompose(cars -> {
             List<CompletionStage<Car>> updatedCars = cars.stream()
                     .map(car -> rating(car.manufacturerId).thenApply(r -> {
