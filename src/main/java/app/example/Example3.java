@@ -19,8 +19,7 @@ public class Example3 {
                 () -> {
                     Util.printThreadDiagnostics("supplyAsync");
                     return 5;
-                },
-                executor
+                }, executor
         ).thenApply(
                 i -> {      //Stream.map
                     Util.printThreadDiagnostics("thenApply");
@@ -42,7 +41,7 @@ public class Example3 {
         //in the same without the "*Async"-suffix
         //----------------------------------------------------------
         task.join();
-
+        executor.shutdown();
     }
 
 }

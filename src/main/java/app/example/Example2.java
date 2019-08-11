@@ -8,6 +8,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.stream.IntStream;
 
 public class Example2 {
 
@@ -20,22 +21,12 @@ public class Example2 {
         //----------------------------------------------------------
         //COMBINATION
         //parallel, runs as long as the longest running single task
-        CompletableFuture<A> first = CompletableFuture
-                .supplyAsync(() -> Task.doTask(500L, new A("[cf 0]")));
-
-        CompletableFuture<A> combined = first;
+        CompletableFuture<A> combined = CompletableFuture.supplyAsync(() -> Task.doTask(500L, new A("[cf 0]")));
 
         for(int i = 1; i < noTasks; i++){
             final int nr = i;
-            CompletableFuture<A> newTask = CompletableFuture
-                    .supplyAsync(
-                            () -> Task.doTask(Util.random(), new A(nr)),
-                            executor
-                    );
-            combined = combined.thenCombine(
-                    newTask,
-                    A::reducer
-            );
+            CompletableFuture<A> newTask = CompletableFuture.supplyAsync(() -> Task.doTask(Util.random(), new A(nr)), executor);
+            combined = combined.thenCombine(newTask, A::reducer);
         }
 
         //----------------------------------------------------------
@@ -43,7 +34,7 @@ public class Example2 {
         long endTime = System.currentTimeMillis();
         System.out.printf("Got [%s] in [%d] ms\n", result, endTime - startTime);
 
-
+        executor.shutdown();
     }
 
 }

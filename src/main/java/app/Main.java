@@ -1,6 +1,5 @@
 package app;
 
-
 import app.example.*;
 
 import java.util.concurrent.ExecutionException;

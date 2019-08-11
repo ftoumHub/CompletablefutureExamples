@@ -10,7 +10,7 @@ public class A extends Base {
         super(nr);
     }
     public static A reducer(A x, A y){
-        Util.printThreadId();
+        Util.printThreadIdAndName();
         return new A(x.val + y.val);
     }
 }

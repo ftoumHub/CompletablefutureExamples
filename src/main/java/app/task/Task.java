@@ -5,10 +5,10 @@ import app.util.Util;
 
 public class Task {
 
-    public static <T extends Base> T doTask(Long timeout, T t){
+    public static <T extends Base> T doTask(Long duration, T t){
         try{
-            Thread.sleep(timeout);
-            Util.printThreadDiagnostics(timeout, t.val);
+            Thread.sleep(duration);
+            Util.printThreadDiagnostics(duration, t.val);
             return t;
         } catch(InterruptedException e) {
             throw new RuntimeException(e);

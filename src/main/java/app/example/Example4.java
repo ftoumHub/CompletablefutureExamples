@@ -24,40 +24,31 @@ public class Example4 {
 
         //----------------------------------------------------------
         //Composition vs Combination - COMPOSITION of CompletableFutures
-        /*
+
         CompletableFuture<String> greeting = CompletableFuture
                 .supplyAsync(() -> "Hello")
                 .thenCompose(s -> CompletableFuture.supplyAsync(() -> s + "World"));
-        */
+
 
         /*
         === COMPOSITION ===
         It is useful in chain pattern where you required
         to make lots of different calls to gather data
         but are interested ONLY in the actual result of the LAST call.
-
          */
 
-        //this code runs sequentially, though sometimes in diferent threads
+        //this code runs sequentially, though sometimes in different threads
         CompletableFuture<A> composed = CompletableFuture
                 .supplyAsync(functor.apply("[cf 0]"), executor)
-                .thenComposeAsync(x -> CompletableFuture.supplyAsync(
-                        functor.apply(x.val + "[cf 1]")),
-                        executor
-                ).thenComposeAsync(x -> CompletableFuture.supplyAsync(
-                        functor.apply(x.val + "[cf 2]")),
-                        executor
-                ).thenComposeAsync(x -> CompletableFuture.supplyAsync(
-                        functor.apply(x.val + "[cf 3]")),
-                        executor
-                );
-
+                .thenComposeAsync(x -> CompletableFuture.supplyAsync(functor.apply(x.val + "[cf 1]")), executor)
+                .thenComposeAsync(x -> CompletableFuture.supplyAsync(functor.apply(x.val + "[cf 2]")), executor)
+                .thenComposeAsync(x -> CompletableFuture.supplyAsync(functor.apply(x.val + "[cf 3]")), executor);
 
         //----------------------------------------------------------
-        A result = composed.get();
+        A compositionResult = composed.get();
         long endTime = System.currentTimeMillis();
 
-        System.out.printf("[COMPOSITION] Got: %s in time: %d\n", result.val, endTime - startTime);
+        System.out.printf("[COMPOSITION] Got: %s in time: %d\n", compositionResult.val, endTime - startTime);
 
         //----------------------------------------------------------
 
@@ -98,14 +89,10 @@ public class Example4 {
         //this code runs in parallel
         //the total time is the time of the longest running single task + some overhead
 
-        CompletableFuture<A> task0 = CompletableFuture
-                .supplyAsync(functor.apply("[cf 0]"), executor);
-        CompletableFuture<A> task1 = CompletableFuture
-                .supplyAsync(functor.apply("[cf 1]"), executor);
-        CompletableFuture<A> task2 = CompletableFuture
-                .supplyAsync(functor.apply("[cf 2]"), executor);
-        CompletableFuture<A> task3 = CompletableFuture
-                .supplyAsync(functor.apply("[cf 3]"), executor);
+        CompletableFuture<A> task0 = CompletableFuture.supplyAsync(functor.apply("[cf 0]"), executor);
+        CompletableFuture<A> task1 = CompletableFuture.supplyAsync(functor.apply("[cf 1]"), executor);
+        CompletableFuture<A> task2 = CompletableFuture.supplyAsync(functor.apply("[cf 2]"), executor);
+        CompletableFuture<A> task3 = CompletableFuture.supplyAsync(functor.apply("[cf 3]"), executor);
 
         CompletableFuture<?> barrier = CompletableFuture.allOf(task0,task1,task2,task3);
 
@@ -116,7 +103,7 @@ public class Example4 {
 
         System.out.printf("[allOf] Got: %s in time: %d\n", result3.val, endTime3 - startTime3);
 
-
+        executor.shutdown();
     }
 
 }
